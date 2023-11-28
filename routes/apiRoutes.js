@@ -3,6 +3,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const filename = './db/db.json';
 
+//GET route for /api/notes read db.json
 router.get('/notes', (req, res) => {
     const data = fs.readFile(filename, 'utf-8', (err, data) => {
         if (err) {
@@ -13,17 +14,20 @@ router.get('/notes', (req, res) => {
     });
 });
 
+//DELETE route for /api/notes based off uuid
 router.delete('/notes/:id', (req, res) => {
+    //retrieve id from data-note attr
     const reqId = req.params.id;
+    //read db.json
     fs.readFile(filename, 'utf-8', (err, data) => {
         if (err) {
             console.error(err);
         } else {
             // Convert string into JSON object
             const parsedData = JSON.parse(data);
-
+            //seek index for obj with reqId return -1 if doesn't exist
             const result = parsedData.findIndex(obj => obj.id === reqId);
-
+            //remove note with splice and write new saved notes to file
             if (result != -1) {
                 parsedData.splice(result, 1);
                 console.log(parsedData);
@@ -40,6 +44,8 @@ router.delete('/notes/:id', (req, res) => {
     });
     res.json("no match found!");
 });
+
+//POST route for /api/notes create new note with title, text, uuid
 router.post('/notes', (req, res) => {
     console.info(`${req.method} request received to add a review`);
 
@@ -52,7 +58,7 @@ router.post('/notes', (req, res) => {
             id: uuidv4()
         };
 
-        // Obtain existing reviews
+        // Obtain saved notes
         fs.readFile(filename, 'utf-8', (err, data) => {
             if (err) {
                 console.error(err);
@@ -60,10 +66,10 @@ router.post('/notes', (req, res) => {
                 // Convert string into JSON object
                 const parsedData = JSON.parse(data);
 
-                // Add a new review
+                // Add a new note
                 parsedData.push(newNote);
 
-                // Write updated reviews back to the file
+                // Write saved notes back to the file
                 fs.writeFile(
                     filename,
                     JSON.stringify(parsedData, null, 4),
@@ -79,8 +85,6 @@ router.post('/notes', (req, res) => {
             status: 'success',
             body: newNote,
         };
-
-        //   console.log(response);
         res.status(201).json(response);
     } else {
         res.status(500).json('Error in posting note');
