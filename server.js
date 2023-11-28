@@ -1,6 +1,4 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 
 const routes = require('./routes/index');
 
@@ -14,5 +12,5 @@ app.use(express.static('public'));
 app.use(routes);
 
 app.listen(PORT, () => 
-console.log(`App listening at <a href="http:localhost:${PORT}">http://localhost:${PORT}</a>`)
+console.log(`App listening at http://localhost:${PORT}`)
 );
