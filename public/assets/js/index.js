@@ -52,7 +52,6 @@ const deleteNote = (id) =>
       'Content-Type': 'application/json'
     }
   });
-
 const renderActiveNote = () => {
   hide(saveNoteBtn);
   hide(clearBtn);
@@ -94,7 +93,6 @@ const handleNoteDelete = (e) => {
   if (activeNote.id === noteId) {
     activeNote = {};
   }
-
   deleteNote(noteId).then(() => {
     getAndRenderNotes();
     renderActiveNote();
